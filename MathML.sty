@@ -1,0 +1,157 @@
+\documentclass[10pt]{beamer}
+
+% --- Tema y Colores ---
+\usetheme{metropolis}
+\usepackage{xcolor}
+
+% Definición de Verde Bosque Elegante
+\definecolor{ForestGreen}{RGB}{24, 120, 30} 
+\definecolor{LightGreen}{RGB}{232, 240, 235}
+
+% Aplicar colores al tema
+\setbeamercolor{palette primary}{bg=ForestGreen, fg=white}
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{structure}{fg=ForestGreen}
+\setbeamercolor{progress bar}{fg=ForestGreen, bg=LightGreen}
+\setbeamercolor{title separator}{fg=ForestGreen}
+
+% --- Paquetes ---
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amsfonts, amssymb}
+\usepackage{fontawesome5} % Para iconos de RRSS
+\usepackage{booktabs}
+
+% --- Información ---
+\title{Fundamentos Matemáticos Avanzados en ML}
+\subtitle{De la Descomposición Tensorial a los Espacios de Hilbert}
+\author{Jordan Breña}
+\date{\today}
+\institute{Especialista en Machine Learning}
+
+\begin{document}
+
+\maketitle
+
+% --- Slide de Contacto Rápido ---
+\begin{frame}{Conecta conmigo}
+    \begin{center}
+        \Large
+        \faLinkedin \ \href{https://www.linkedin.com/in/jordanbrena/}{/in/jordanbrena} \\
+        \vspace{0.5cm}
+        \faGithub \ \href{https://github.com/Jordanc137}{github.com/Jordanc137} \\
+        \vspace{0.5cm}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Tabla de Contenidos}
+  \setbeamertemplate{section in toc}[sections numbered]
+  \tableofcontents[hideallsubsections]
+\end{frame}
+
+% --- Sección 1 ---
+\section{Álgebra Lineal: SVD}
+\begin{frame}{Descomposición en Valores Singulares (SVD)}
+    Sea $A \in \mathbb{R}^{m \times n}$, existe una factorización:
+    \begin{equation*}
+        A = U\Sigma V^T
+    \end{equation*}
+    Donde:
+    \begin{itemize}
+        \item $U \in \mathbb{R}^{m \times m}$ (Vectores singulares a izquierda).
+        \item $V \in \mathbb{R}^{n \times n}$ (Vectores singulares a derecha).
+        \item $\Sigma = \text{diag}(\sigma_1, \dots, \sigma_r)$ con $\sigma_1 \ge \dots \ge \sigma_r > 0$.
+    \end{itemize}
+    \begin{block}{Aplicación en ML}
+        Es el pilar del **PCA**. Permite la reducción de dimensionalidad encontrando la mejor aproximación de rango bajo en sentido de la norma de Frobenius.
+    \end{block}
+\end{frame}
+
+% --- Sección 2 ---
+\section{Optimización: La Hessiana}
+\begin{frame}{Curvatura y Matrices de Segundo Orden}
+    Para una función de pérdida $L(\theta)$, la matriz **Hessiana** $H$ se define como:
+    \begin{equation*}
+        \mathbf{H}_{i,j} = \frac{\partial^2 L}{\partial \theta_i \partial \theta_j}
+    \end{equation*}
+    \begin{itemize}
+        \item Si $\mathbf{H} \succ 0$ (definida positiva), el punto es un mínimo local estricto.
+        \item En problemas de ML de alta dimensión, el autovalor máximo de $H$ determina la máxima tasa de aprendizaje ($\eta$) estable.
+    \end{itemize}
+    \textit{Aplicación: Métodos de Newton y optimizadores adaptativos (como Adam/L-BFGS).}
+\end{frame}
+
+% --- Sección 3 ---
+\section{Teoría de la Información: KL}
+\begin{frame}{Divergencia de Kullback-Leibler}
+    Mide la disparidad entre la distribución real $P$ y la aproximada $Q$:
+    \begin{equation*}
+        D_{KL}(P \parallel Q) = \mathbb{E}_{x \sim P} \left[ \log \frac{P(x)}{Q(x)} \right]
+    \end{equation*}
+    \textbf{Propiedades Fundamentales:}
+    \begin{enumerate}
+        \item $D_{KL}(P \parallel Q) \ge 0$ (Teorema de Gibbs).
+        \item No es simétrica: $D_{KL}(P \parallel Q) \neq D_{KL}(Q \parallel P)$.
+    \end{enumerate}
+    \begin{alertblock}{Uso en VAEs}
+        Se utiliza como término de regularización para forzar que el espacio latente siga una distribución normal $\mathcal{N}(0, I)$.
+    \end{alertblock}
+\end{frame}
+
+% --- Sección 4 ---
+\section{Kernels y Espacios de Hilbert}
+\begin{frame}{RKHS (Reproducing Kernel Hilbert Spaces)}
+    Un espacio de Hilbert $\mathcal{H}$ es un **RKHS** si el funcional de evaluación $L_x(f) = f(x)$ es continuo $\forall x$.
+    \begin{theorem}[Teorema de Representación]
+        La solución de $\min_{f \in \mathcal{H}} \frac{1}{n} \sum L(y_i, f(x_i)) + \lambda \|f\|_{\mathcal{H}}^2$ tiene la forma:
+        \[ f^*(x) = \sum_{i=1}^n \alpha_i K(x, x_i) \]
+    \end{theorem}
+    Esto permite operar en dimensiones infinitas mediante la función Kernel $K(\cdot, \cdot)$.
+\end{frame}
+
+% --- Sección 5 ---
+\section{Referencias y Enlaces}
+\begin{frame}[allowframebreaks]{Referencias Bibliográficas}
+    \begin{thebibliography}{9}
+        \beamertemplatebookbibitems
+        \bibitem{goodfellow}
+        Ian Goodfellow, Yoshua Bengio y Aaron Courville.
+        \emph{Deep Learning}.
+        MIT Press, 2016.
+
+        \bibitem{bishop}
+        Christopher M. Bishop.
+        \emph{Pattern Recognition and Machine Learning}.
+        Springer, 2006.
+
+        \bibitem{boyd}
+        Stephen Boyd y Lieven Vandenberghe.
+        \emph{Convex Optimization}.
+        Cambridge University Press, 2004.
+    \end{thebibliography}
+\end{frame}
+
+% --- Slide de Cierre ---
+
+\begin{frame}{¡Gracias por su atención!}
+    \begin{center}
+        {\color{ForestGreen}\rule{\linewidth}{2pt}}
+        \vspace{0.5cm}
+        \begin{columns}
+            \begin{column}{0.5\textwidth}
+                \centering
+                \textbf{LinkedIn} \\
+                \faLinkedin \ \href{www.linkedin.com/in/jordanbrena}{/in/jordanbrena}
+            \end{column}
+            \begin{column}{0.5\textwidth}
+                \centering
+                \textbf{GitHub} \\
+                \faGithub \ \href{https://github.com/Jordanc137}{Jordanc137}
+            \end{column}
+        \end{columns}
+        \vspace{0.8cm}
+        \textit{"La matemática es el lenguaje con el que el universo escribe la Inteligencia Artificial."}
+    \end{center}
+\end{frame}
+
+\end{document}
